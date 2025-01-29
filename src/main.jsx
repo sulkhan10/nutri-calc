@@ -16,7 +16,7 @@ const App = () => {
             <Navigation  />
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/Tdee" element={<Tdee />} />
+                <Route path="/tdee" element={<Tdee />} />
                 
                 {/* Catch-all route for undefined routes */}
                 <Route path="*" element={<NotFound />} />

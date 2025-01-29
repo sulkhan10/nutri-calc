@@ -31,7 +31,7 @@ const Home = () => {
         cancelButtonText: "Cancel",
       }).then((result) => {
         if (result.isConfirmed) {
-          navigate("/Tdee");
+          navigate("/tdee");
         }
       });
     } else {
