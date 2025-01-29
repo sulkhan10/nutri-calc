@@ -64,8 +64,12 @@ const Calculator = () => {
   };
 
   return (
-    <div className="container bg-[#E8F5E9] min-h-screen mx-auto p-6 max-w-sm text-xs">
-      <h1 className="text-3xl font-semibold text-center mb-6">BMI & TDEE Calculator</h1>
+    <div
+    className={`container bg-[#E8F5E9] min-h-screen mx-auto p-6 max-w-sm text-xs ${
+      bmi ? "pt-16" : "pt-28"
+    }`}
+  >
+      <h1 className="text-xl font-semibold text-center my-2 text-[#1B5E20]">BMI & TDEE Calculator</h1>
 
       {/* Gender Selector */}
       <div className="mb-4">

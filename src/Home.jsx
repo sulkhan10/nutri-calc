@@ -32,26 +32,27 @@ const Home = () => {
 
   
   // Fetch TDEE from localStorage when the component loads
-  useEffect(() => {
-    // console.log(bmi, tdee, isNaN(bmi), "bmi tdee");
-    if (!bmi || bmi < 0) {
-      Swal.fire({
-        title: "Please Input Your Data First",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Input Data",
-        cancelButtonText: "Cancel",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/tdee");
-        }
-      });
-    } else {
-      if (tdee && !isNaN(tdee) && tdee > 0) {
-        setTdee(tdee);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   // console.log(bmi, tdee, isNaN(bmi), "bmi tdee");
+  //   if (!bmi || bmi < 0) {
+  //     Swal.fire({
+  //       title: "Please Input Your Data First",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "Input Data",
+  //       cancelButtonText: "Cancel",
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         navigate("/tdee");
+  //       }
+  //     });
+  //   } 
+  //   else {
+  //     if (tdee && !isNaN(tdee) && tdee > 0) {
+  //       setTdee(tdee);
+  //     }
+  //   }
+  // }, []);
 
   useEffect(() => {
     const loadDatabase = async () => {
@@ -177,7 +178,9 @@ const Home = () => {
   const totalCarbs = calorieList.reduce((sum, item) => sum + item.carbs, 0);
 
   return (
-    <div className=" bg-[#E8F5E9] px-1 w-full min-h-screen pt-16 max-w-sm ">
+    <div className={` bg-[#E8F5E9] px-1 w-full min-h-screen pt-16 max-w-sm ${
+      bmi ? "pt-16" : "pt-28"
+    }`}>
       {/* <h1 className="text-xs font-semibold text-center w-full my-1 ">
         Food List
       </h1> */}
@@ -208,7 +211,7 @@ const Home = () => {
   )}
 </div>
 
-      <table className=" w-full mb-6 bg-[#A5D6A7] text-xs px-2 ">
+      <table className=" w-full mb-6 bg-[#A5D6A7] text-xs  px-2 ">
         <thead className="bg-[#A5D6A7] w-full ">
           <tr className="w-full">
             {/* <th className="px-4 py-2 text-left">Kode</th> */}
