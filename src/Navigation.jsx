@@ -9,21 +9,17 @@ const Navigation = () => {
 
   // Fetch data from localStorage when the component mounts
   useEffect(() => {
-    const handleStorageChange = (event) => {
-      if (event.key === "tdee") {
-        setTdee(Number(event.newValue).toFixed(0));
-      }
-      if (event.key === "bmi") {
-        setBmi(Number(event.newValue).toFixed(1));
-      }
-    };
-  
-    window.addEventListener("storage", handleStorageChange);
-  
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+    const storedTdee = localStorage.getItem("tdee");
+    const storedBmi = localStorage.getItem("bmi");
+
+    if (storedTdee) {
+      setTdee(Number(storedTdee).toFixed(0));
+    }
+
+    if (storedBmi) {
+      setBmi(Number(storedBmi).toFixed(1));
+    }
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   return (
     <div className="bg-[#4CAF50] w-screen h-16 px-4 absolute top-0 z-10 max-w-sm">
