@@ -3,6 +3,17 @@ import initSqlJs from "sql.js";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { XCircleIcon } from '@heroicons/react/24/solid'
+import {
+  genderAtom,
+  ageAtom,
+  weightAtom,
+  heightAtom,
+  activityLevelAtom,
+  bmiAtom,
+  tdeeAtom,
+  errorAtom,
+} from "./atoms"; // Import the atoms
+import { useAtom } from "jotai";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -16,13 +27,11 @@ const Home = () => {
   const [weight, setWeight] = useState(""); // Store weight input
   const [calorieList, setCalorieList] = useState([]); // Store list of added items and their nutrients
   const [modalOpen, setModalOpen] = useState(false); // Control modal visibility
-  const [tdee, setTdee] = useState(null);
-
+  const [bmi, setBmi] = useAtom(bmiAtom);
+  const [tdee, setTdee] = useAtom(tdeeAtom);
   // Fetch TDEE from localStorage when the component loads
   useEffect(() => {
-    const savedTdee = localStorage.getItem("tdee");
-    const savedBmi = localStorage.getItem("bmi");
-    if (!savedBmi || isNaN(savedBmi) || savedBmi < 0) {
+    if (!bmi || isNaN(bmi) || bmi < 0) {
       Swal.fire({
         title: "Please Input Your Data First",
         icon: "warning",
@@ -35,8 +44,8 @@ const Home = () => {
         }
       });
     } else {
-      if (savedTdee && !isNaN(savedTdee) && savedTdee > 0) {
-        setTdee(savedTdee);
+      if (tdee && !isNaN(tdee) && tdee > 0) {
+        setTdee(tdee);
       }
     }
   }, []);

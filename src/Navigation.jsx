@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { ChartPieIcon, TableCellsIcon, UserIcon } from '@heroicons/react/24/solid';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useAtom } from 'jotai';
+import { tdeeAtom, bmiAtom } from './atoms'; // Import the atoms
 
 const Navigation = () => {
-  // State to store TDEE and BMI values
-  const [tdee, setTdee] = useState(0);
-  const [bmi, setBmi] = useState("");
+  // Use the atoms to get and set tdee and bmi
+  const [tdee, setTdee] = useAtom(tdeeAtom);
+  const [bmi, setBmi] = useAtom(bmiAtom);
 
   // Fetch data from localStorage when the component mounts
   useEffect(() => {
@@ -19,7 +21,7 @@ const Navigation = () => {
     if (storedBmi) {
       setBmi(Number(storedBmi).toFixed(1));
     }
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, [setTdee, setBmi]); // Add setTdee and setBmi to the dependency array
 
   return (
     <div className="bg-[#4CAF50] w-screen h-16 px-4 absolute top-0 z-10 max-w-sm">
@@ -33,7 +35,9 @@ const Navigation = () => {
               <ChartPieIcon className="h-4 w-4" color="#1B5E20" aria-hidden="true" />
             </span>
             <span className="text-gray-50 text-xs">
-              AKG {tdee} Kal
+              AKG {tdee 
+              ? Number(tdee).toFixed(0) : 0
+              } Kal
             </span>
           </div>
           <div className="flex items-center space-x-1 justify-center">
@@ -41,7 +45,9 @@ const Navigation = () => {
               <UserIcon className="h-4 w-4" color="#1B5E20" aria-hidden="true" />
             </span>
             <span className="text-gray-50 text-xs">
-              BMI {bmi}
+              BMI {bmi
+              ? Number(bmi).toFixed(1) : 0
+              }
             </span>
           </div>
           <Link className="flex items-center space-x-1 cursor-pointer" to={"/tdee"}>

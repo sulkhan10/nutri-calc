@@ -1,44 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useAtom } from "jotai";
+import {
+  genderAtom,
+  ageAtom,
+  weightAtom,
+  heightAtom,
+  activityLevelAtom,
+  bmiAtom,
+  tdeeAtom,
+  errorAtom,
+} from "./atoms"; // Import the atoms
 
 const Calculator = () => {
-  const [gender, setGender] = useState("male");
-  const [age, setAge] = useState("");
-  const [weight, setWeight] = useState("");
-  const [height, setHeight] = useState("");
-  const [activityLevel, setActivityLevel] = useState(1.2);
-  const [bmi, setBmi] = useState(null);
-  const [tdee, setTdee] = useState(null);
-  const [error, setError] = useState(""); // Error message state
-
-  // Load saved data from localStorage when the component mounts
-  useEffect(() => {
-    const savedGender = localStorage.getItem("gender");
-    const savedAge = localStorage.getItem("age");
-    const savedWeight = localStorage.getItem("weight");
-    const savedHeight = localStorage.getItem("height");
-    const savedActivityLevel = localStorage.getItem("activityLevel");
-    const savedBmi = localStorage.getItem("bmi");
-    const savedTdee = localStorage.getItem("tdee");
-
-    if (savedGender) setGender(savedGender);
-    if (savedAge) setAge(savedAge);
-    if (savedWeight) setWeight(savedWeight);
-    if (savedHeight) setHeight(savedHeight);
-    if (savedActivityLevel) setActivityLevel(Number(savedActivityLevel));
-    if (savedBmi) setBmi(savedBmi);
-    if (savedTdee) setTdee(savedTdee);
-  }, []);
-
-  // Save data to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("gender", gender);
-    localStorage.setItem("age", age);
-    localStorage.setItem("weight", weight);
-    localStorage.setItem("height", height);
-    localStorage.setItem("activityLevel", activityLevel);
-    if (bmi !== null) localStorage.setItem("bmi", bmi);
-    if (tdee !== null) localStorage.setItem("tdee", tdee);
-  }, [gender, age, weight, height, activityLevel, bmi, tdee]);
+  // Use atoms to manage state
+  const [gender, setGender] = useAtom(genderAtom);
+  const [age, setAge] = useAtom(ageAtom);
+  const [weight, setWeight] = useAtom(weightAtom);
+  const [height, setHeight] = useAtom(heightAtom);
+  const [activityLevel, setActivityLevel] = useAtom(activityLevelAtom);
+  const [bmi, setBmi] = useAtom(bmiAtom);
+  const [tdee, setTdee] = useAtom(tdeeAtom);
+  const [error, setError] = useAtom(errorAtom);
 
   const calculateBmiAndTdee = () => {
     // Reset error message
@@ -46,7 +28,7 @@ const Calculator = () => {
 
     // Check if all fields are filled
     if (!age || !weight || !height || !activityLevel) {
-      setError("Please fill out all fields!"); // Set error message
+      setError("Please fill out all fields!");
       return;
     }
 
@@ -67,10 +49,6 @@ const Calculator = () => {
     const totalCalories = bmr * activityLevel;
     const totalCaloriesFixed = totalCalories.toFixed(2);
     setTdee(totalCaloriesFixed);
-
-    // Save calculated values to localStorage
-    localStorage.setItem("bmi", bmiCalculated);
-    localStorage.setItem("tdee", totalCaloriesFixed);
   };
 
   const resetCalculator = () => {
@@ -83,21 +61,12 @@ const Calculator = () => {
     setBmi(null);
     setTdee(null);
     setError("");
-
-    // Clear localStorage
-    localStorage.removeItem("gender");
-    localStorage.removeItem("age");
-    localStorage.removeItem("weight");
-    localStorage.removeItem("height");
-    localStorage.removeItem("activityLevel");
-    localStorage.removeItem("bmi");
-    localStorage.removeItem("tdee");
   };
 
   return (
     <div className="container bg-[#E8F5E9] min-h-screen mx-auto p-6 max-w-sm text-xs">
       <h1 className="text-3xl font-semibold text-center mb-6">BMI & TDEE Calculator</h1>
-      
+
       {/* Gender Selector */}
       <div className="mb-4">
         <label className="block mb-2">Gender</label>
@@ -159,66 +128,64 @@ const Calculator = () => {
       </div>
 
       {/* Error Message */}
-      {error && <p className="text-red-500 text-sm">{error}</p>} 
+      {error && <p className="text-red-500 text-sm">{error}</p>}
 
-     {/* Calculate Button */}
-<button
-  onClick={calculateBmiAndTdee}
-  className="bg-gradient-to-r from-green-700 to-green-500 text-white px-6 py-3 rounded-lg mt-4 shadow-md hover:shadow-lg hover:from-green-800 hover:to-green-600 transition-all duration-300"
->
-  Calculate BMI & TDEE
-</button>
+      {/* Calculate Button */}
+      <button
+        onClick={calculateBmiAndTdee}
+        className="bg-gradient-to-r from-green-700 to-green-500 text-white px-6 py-3 rounded-lg mt-4 shadow-md hover:shadow-lg hover:from-green-800 hover:to-green-600 transition-all duration-300"
+      >
+        Calculate BMI & TDEE
+      </button>
 
-{/* BMI and TDEE Display */}
-{bmi !== null && (
-  <div className="mt-6 bg-gray-100 p-4 rounded-lg shadow-md">
-    <h2 className="text-lg font-bold text-gray-800 mb-2">Your BMI</h2>
-    <p
-      className={`text-2xl font-semibold ${
-        bmi < 18.5
-          ? "text-blue-500"
-          : bmi >= 18.5 && bmi <= 24.9
-          ? "text-green-500"
-          : bmi >= 25 && bmi <= 29.9
-          ? "text-yellow-500"
-          : "text-red-500"
-      }`}
-    >
-      {bmi}
-    </p>
-    <p className="text-sm text-gray-600 mt-1">
-      {bmi < 18.5
-        ? "Underweight"
-        : bmi >= 18.5 && bmi <= 24.9
-        ? "Normal weight"
-        : bmi >= 25 && bmi <= 29.9
-        ? "Overweight"
-        : "Obesity"}
-    </p>
-  </div>
-)}
+      {/* BMI and TDEE Display */}
+      {bmi !== null && (
+        <div className="mt-6 bg-gray-100 p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-bold text-gray-800 mb-2">Your BMI</h2>
+          <p
+            className={`text-2xl font-semibold ${
+              bmi < 18.5
+                ? "text-blue-500"
+                : bmi >= 18.5 && bmi <= 24.9
+                ? "text-green-500"
+                : bmi >= 25 && bmi <= 29.9
+                ? "text-yellow-500"
+                : "text-red-500"
+            }`}
+          >
+            {bmi}
+          </p>
+          <p className="text-sm text-gray-600 mt-1">
+            {bmi < 18.5
+              ? "Underweight"
+              : bmi >= 18.5 && bmi <= 24.9
+              ? "Normal weight"
+              : bmi >= 25 && bmi <= 29.9
+              ? "Overweight"
+              : "Obesity"}
+          </p>
+        </div>
+      )}
 
-{tdee !== null && (
-  <div className="mt-6 bg-gray-100 p-4 rounded-lg shadow-md">
-    <h2 className="text-lg font-bold text-gray-800 mb-2">Your TDEE</h2>
-    <p className="text-2xl font-semibold text-green-500">{tdee} kcal</p>
-    <p className="text-sm text-gray-600 mt-1">
-      This is the number of calories you need to maintain your current weight.
-    </p>
-  </div>
-)}
-
-{/* Reset Button */}
-{tdee !== null && (
-  <button
-    onClick={resetCalculator}
-    className="bg-gradient-to-r from-gray-500 to-gray-400 text-white px-6 py-3 rounded-lg mt-4 shadow-md hover:shadow-lg hover:from-gray-600 hover:to-gray-500 transition-all duration-300"
-  >
-    Reset
-  </button>
-)}
+      {tdee !== null && (
+        <div className="mt-6 bg-gray-100 p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-bold text-gray-800 mb-2">Your TDEE</h2>
+          <p className="text-2xl font-semibold text-green-500">{tdee} kcal</p>
+          <p className="text-sm text-gray-600 mt-1">
+            This is the number of calories you need to maintain your current weight.
+          </p>
+        </div>
+      )}
 
       {/* Reset Button */}
+      {tdee !== null && (
+        <button
+          onClick={resetCalculator}
+          className="bg-gradient-to-r from-gray-500 to-gray-400 text-white px-6 py-3 rounded-lg mt-4 shadow-md hover:shadow-lg hover:from-gray-600 hover:to-gray-500 transition-all duration-300"
+        >
+          Reset
+        </button>
+      )}
     </div>
   );
 };
