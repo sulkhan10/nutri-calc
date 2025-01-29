@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import initSqlJs from "sql.js";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { XCircleIcon } from "@heroicons/react/24/solid";
+import { XCircleIcon } from '@heroicons/react/24/solid'
 import {
   genderAtom,
   ageAtom,
@@ -30,25 +30,11 @@ const Home = () => {
   const [bmi, setBmi] = useAtom(bmiAtom);
   const [tdee, setTdee] = useAtom(tdeeAtom);
 
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const isKeyboardOpen = window.innerHeight < window.outerHeight;
-      if (isKeyboardOpen) {
-        setKeyboardHeight(window.outerHeight - window.innerHeight);
-      } else {
-        setKeyboardHeight(0);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
+  
   // Fetch TDEE from localStorage when the component loads
   useEffect(() => {
-    if (!bmi || isNaN(bmi) || bmi < 0) {
+    // console.log(bmi, tdee, isNaN(bmi), "bmi tdee");
+    if (!bmi || bmi < 0) {
       Swal.fire({
         title: "Please Input Your Data First",
         icon: "warning",
@@ -191,37 +177,36 @@ const Home = () => {
   const totalCarbs = calorieList.reduce((sum, item) => sum + item.carbs, 0);
 
   return (
-    <div
-      className=" bg-[#E8F5E9] px-1 w-full min-h-screen pt-16 max-w-sm "
-      style={{ paddingBottom: keyboardHeight }}
-    >
+    <div className=" bg-[#E8F5E9] px-1 w-full min-h-screen pt-16 max-w-sm ">
       {/* <h1 className="text-xs font-semibold text-center w-full my-1 ">
         Food List
       </h1> */}
 
-      <div className="my-4 relative flex items-center">
-        <input
-          type="text"
-          placeholder="Search food..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1); // Reset to first page on search
-          }}
-          className="p-2 border rounded-md w-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#A5D6A7] transition duration-200 pr-10" // Add padding to the right for the icon
-        />
-        {searchTerm && ( // Only show the icon if there is a search term
-          <button
-            onClick={() => {
-              setSearchTerm("");
-            }}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#1B5E20] text-white p-0 rounded-full hover:bg-[#2E7D32] transition duration-200"
-            aria-label="Clear search"
-          >
-            <XCircleIcon className="h-4 w-4" aria-hidden="true" />
-          </button>
-        )}
-      </div>
+
+
+<div className="my-4 relative flex items-center">
+  <input
+    type="text"
+    placeholder="Search food..."
+    value={searchTerm}
+    onChange={(e) => {
+      setSearchTerm(e.target.value);
+      setCurrentPage(1); // Reset to first page on search
+    }}
+    className="p-2 border rounded-md w-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#A5D6A7] transition duration-200 pr-10" // Add padding to the right for the icon
+  />
+  {searchTerm && ( // Only show the icon if there is a search term
+    <button
+      onClick={() => {
+        setSearchTerm("");
+      }}
+      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#1B5E20] text-white p-0 rounded-full hover:bg-[#2E7D32] transition duration-200"
+      aria-label="Clear search"
+    >
+      <XCircleIcon className="h-4 w-4" aria-hidden="true" />
+    </button>
+  )}
+</div>
 
       <table className=" w-full mb-6 bg-[#A5D6A7] text-xs px-2 ">
         <thead className="bg-[#A5D6A7] w-full ">
@@ -257,43 +242,41 @@ const Home = () => {
           ))}
         </tbody>
       </table>
-      {/* Pagination */}
-      <div className="mt-1 mb-4 flex justify-center space-x-1 m">
-        {Array.from({ length: totalPages }, (_, i) => {
-          const page = i + 1;
+       {/* Pagination */}
+       <div className="mt-1 mb-4 flex justify-center space-x-1 m">
+       {Array.from({ length: totalPages }, (_, i) => {
+  const page = i + 1;
 
-          // Logic to show only a few pages with "..." for large page numbers
-          if (
-            page === 1 || // Always show the first page
-            page === totalPages || // Always show the last page
-            (page >= currentPage - 1 && page <= currentPage + 1) // Show pages around the current page
-          ) {
-            return (
-              <button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                className={`px-2 aspect-square border text-xs border-[#2E7D32] rounded-md ${
-                  currentPage === page
-                    ? "bg-[#2E7D32] text-white"
-                    : "bg-gray-100"
-                }`}
-              >
-                {page}
-              </button>
-            );
-          } else if (
-            (page === currentPage - 2 && currentPage > 3) || // Add "..." before the current page
-            (page === currentPage + 2 && currentPage < totalPages - 2) // Add "..." after the current page
-          ) {
-            return (
-              <span key={page} className="px-2 text-gray-500">
-                ...
-              </span>
-            );
-          }
+  // Logic to show only a few pages with "..." for large page numbers
+  if (
+    page === 1 || // Always show the first page
+    page === totalPages || // Always show the last page
+    (page >= currentPage - 1 && page <= currentPage + 1) // Show pages around the current page
+  ) {
+    return (
+      <button
+        key={page}
+        onClick={() => handlePageChange(page)}
+        className={`px-2 aspect-square border text-xs border-[#2E7D32] rounded-md ${
+          currentPage === page ? "bg-[#2E7D32] text-white" : "bg-gray-100"
+        }`}
+      >
+        {page}
+      </button>
+    );
+  } else if (
+    (page === currentPage - 2 && currentPage > 3) || // Add "..." before the current page
+    (page === currentPage + 2 && currentPage < totalPages - 2) // Add "..." after the current page
+  ) {
+    return (
+      <span key={page} className="px-2 text-gray-500">
+        ...
+      </span>
+    );
+  }
 
-          return null; // Hide other pages
-        })}
+  return null; // Hide other pages
+})}
         <div className="flex items-center px-2 py-1 bg-[#F1F8E9] text-xs">
           <label className="mr-1">Per page:</label>
           <select
@@ -355,7 +338,7 @@ const Home = () => {
                 className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm text-xs"
               >
                 <div>
-                  {item.food}
+                  {item.food} 
                   <input
                     type="number"
                     required
@@ -367,18 +350,11 @@ const Home = () => {
                     className="w-16 mb-1 mx-2 px-2 border rounded"
                   />
                   grams
-                  <div className="text-[10px]">
-                    Calories: {item.calories.toFixed(2)} Kal
-                  </div>
-                  <div className="text-[10px]">
-                    Protein: {item.protein.toFixed(2)} g
-                  </div>
-                  <div className="text-[10px]">
-                    Fat: {item.fat.toFixed(2)} g
-                  </div>
-                  <div className="text-[10px]">
-                    Carbs: {item.carbs.toFixed(2)} g
-                  </div>
+                  <div className="text-[10px]">Calories: {item.calories.toFixed(2)} Kal</div>
+                  <div className="text-[10px]">Protein: {item.protein.toFixed(2)} g</div>
+                  <div className="text-[10px]">Fat: {item.fat.toFixed(2)} g</div>
+                  <div className="text-[10px]">Carbs:{" "}
+                  {item.carbs.toFixed(2)} g</div>
                 </div>
                 <button
                   onClick={() => deleteItemFromList(index)}
@@ -390,127 +366,105 @@ const Home = () => {
             ))}
           </ul>
 
-          {/* Total Calories */}
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
-            <h2 className="text-lg font-bold text-gray-800 mb-2">
-              Nutrition Summary
-            </h2>
+      {/* Total Calories */}
+<div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
+  <h2 className="text-lg font-bold text-gray-800 mb-2">Nutrition Summary</h2>
 
-            {/* Total Calories */}
-            <div className="mt-2">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold text-gray-700">
-                  Total Calories:
-                </span>
-                <span className="text-xs font-semibold text-gray-900">
-                  {totalCalories.toFixed(2)} Kal
-                </span>
-              </div>
-              {/* Progress Bar for Calories */}
-              <div className="w-full bg-gray-300 rounded-full h-2 mt-1">
-                <div
-                  className={`h-2 rounded-full ${
-                    totalCalories > tdee ? "bg-red-500" : "bg-green-500"
-                  }`}
-                  style={{
-                    width: `${Math.min((totalCalories / tdee) * 100, 100)}%`,
-                  }}
-                ></div>
-              </div>
-            </div>
+  {/* Total Calories */}
+  <div className="mt-2">
+    <div className="flex justify-between items-center">
+      <span className="text-xs font-semibold text-gray-700">Total Calories:</span>
+      <span className="text-xs font-semibold text-gray-900">{totalCalories.toFixed(2)} Kal</span>
+    </div>
+    {/* Progress Bar for Calories */}
+    <div className="w-full bg-gray-300 rounded-full h-2 mt-1">
+      <div
+        className={`h-2 rounded-full ${
+          totalCalories > tdee ? "bg-red-500" : "bg-green-500"
+        }`}
+        style={{ width: `${Math.min((totalCalories / tdee) * 100, 100)}%` }}
+      ></div>
+    </div>
+  </div>
 
-            {/* Total Protein */}
-            <div className="mt-2">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold text-gray-700">
-                  Total Protein:
-                </span>
-                <span className="text-xs font-semibold text-gray-900">
-                  {totalProtein.toFixed(2)} g
-                </span>
-              </div>
-              {/* Progress Bar for Protein */}
-              {/* <div className="w-full bg-gray-300 rounded-full h-2 mt-1">
+  {/* Total Protein */}
+  <div className="mt-2">
+    <div className="flex justify-between items-center">
+      <span className="text-xs font-semibold text-gray-700">Total Protein:</span>
+      <span className="text-xs font-semibold text-gray-900">{totalProtein.toFixed(2)} g</span>
+    </div>
+    {/* Progress Bar for Protein */}
+    {/* <div className="w-full bg-gray-300 rounded-full h-2 mt-1">
       <div
         className="h-2 rounded-full bg-blue-500"
         style={{ width: `${Math.min((totalProtein / 100) * 100, 100)}%` }}
       ></div>
     </div> */}
-            </div>
+  </div>
 
-            {/* Total Fat */}
-            <div className="mt-2">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold text-gray-700">
-                  Total Fat:
-                </span>
-                <span className="text-xs font-semibold text-gray-900">
-                  {totalFat.toFixed(2)} g
-                </span>
-              </div>
-              {/* Progress Bar for Fat */}
-              {/* <div className="w-full bg-gray-300 rounded-full h-2 mt-1">
+  {/* Total Fat */}
+  <div className="mt-2">
+    <div className="flex justify-between items-center">
+      <span className="text-xs font-semibold text-gray-700">Total Fat:</span>
+      <span className="text-xs font-semibold text-gray-900">{totalFat.toFixed(2)} g</span>
+    </div>
+    {/* Progress Bar for Fat */}
+    {/* <div className="w-full bg-gray-300 rounded-full h-2 mt-1">
       <div
         className="h-2 rounded-full bg-yellow-500"
         style={{ width: `${Math.min((totalFat / 100) * 100, 100)}%` }}
       ></div>
     </div> */}
-            </div>
+  </div>
 
-            {/* Total Carbs */}
-            <div className="mt-2">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold text-gray-700">
-                  Total Carbs:
-                </span>
-                <span className="text-xs font-semibold text-gray-900">
-                  {totalCarbs.toFixed(2)} g
-                </span>
-              </div>
-              {/* Progress Bar for Carbs */}
-              {/* <div className="w-full bg-gray-300 rounded-full h-2 mt-1">
+  {/* Total Carbs */}
+  <div className="mt-2">
+    <div className="flex justify-between items-center">
+      <span className="text-xs font-semibold text-gray-700">Total Carbs:</span>
+      <span className="text-xs font-semibold text-gray-900">{totalCarbs.toFixed(2)} g</span>
+    </div>
+    {/* Progress Bar for Carbs */}
+    {/* <div className="w-full bg-gray-300 rounded-full h-2 mt-1">
       <div
         className="h-2 rounded-full bg-purple-500"
         style={{ width: `${Math.min((totalCarbs / 100) * 100, 100)}%` }}
       ></div>
     </div> */}
-            </div>
+  </div>
 
-            {/* TDEE and Percentage */}
-            {tdee !== null && (
-              <div className="mt-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs font-semibold text-gray-700">
-                    TDEE:
-                  </span>
-                  <span className="text-xs font-semibold text-gray-900">
-                    {tdee} Kal
-                  </span>
-                </div>
-                <div className="mt-2 text-xs font-semibold text-gray-700">
-                  Percentage of TDEE:{" "}
-                  <span
-                    className={`${
-                      totalCalories > tdee ? "text-red-500" : "text-green-500"
-                    }`}
-                  >
-                    {((totalCalories / tdee) * 100).toFixed(2)}%
-                  </span>
-                </div>
-                <div
-                  className={`mt-1 text-xs ${
-                    totalCalories > tdee ? "text-red-500" : "text-green-500"
-                  }`}
-                >
-                  {totalCalories > tdee
-                    ? "You have exceeded your daily calorie intake."
-                    : "You are within your daily calorie intake."}
-                </div>
-              </div>
-            )}
-          </div>
+  {/* TDEE and Percentage */}
+  {tdee !== null && (
+    <div className="mt-4">
+      <div className="flex justify-between items-center">
+        <span className="text-xs font-semibold text-gray-700">TDEE:</span>
+        <span className="text-xs font-semibold text-gray-900">{tdee} Kal</span>
+      </div>
+      <div className="mt-2 text-xs font-semibold text-gray-700">
+        Percentage of TDEE:{" "}
+        <span
+          className={`${
+            totalCalories > tdee ? "text-red-500" : "text-green-500"
+          }`}
+        >
+          {((totalCalories / tdee) * 100).toFixed(2)}%
+        </span>
+      </div>
+      <div
+        className={`mt-1 text-xs ${
+          totalCalories > tdee ? "text-red-500" : "text-green-500"
+        }`}
+      >
+        {totalCalories > tdee
+          ? "You have exceeded your daily calorie intake."
+          : "You are within your daily calorie intake."}
+      </div>
+    </div>
+  )}
+</div>
         </div>
       )}
+
+     
     </div>
   );
 };
