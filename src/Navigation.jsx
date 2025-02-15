@@ -12,6 +12,17 @@ const Navigation = () => {
     <>
       {/* Navbar */}
       <div className="bg-[#4CAF50] w-screen h-16 px-4 absolute top-0 z-10 max-w-sm">
+         {/* Prompt Message (Conditional Rendering) */}
+      {!bmi && (
+        <div className="absolute top-16 left-0 w-screen max-w-sm bg-yellow-100 p-2 h-12 text-center text-sm text-yellow-800 z-10">
+          <p>
+            Please complete your data to calculate your BMI.{" "}
+          </p>
+            <Link to="/tdee" className="text-blue-500 underline">
+              Go to Input Data
+            </Link>
+        </div>
+      )}
         <div className="py-4 flex justify-between items-center w-full">
           <Link to={"/"} className="text-xl font-bold text-gray-50 w-1/3">
             Nutri Calc
@@ -43,17 +54,7 @@ const Navigation = () => {
         </div>
       </div>
 
-      {/* Prompt Message (Conditional Rendering) */}
-      {!bmi && (
-        <div className="absolute top-16 left-0 w-full bg-yellow-100 p-2 h-12 text-center text-sm text-yellow-800 z-10">
-          <p>
-            Please complete your data to calculate your BMI.{" "}
-          </p>
-            <Link to="/tdee" className="text-blue-500 underline">
-              Go to Input Data
-            </Link>
-        </div>
-      )}
+     
     </>
   );
 };
