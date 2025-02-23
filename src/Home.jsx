@@ -75,7 +75,7 @@ const Home = () => {
 
   const fetchTotalRows = (db) => {
     const countQuery = searchTerm
-      ? `SELECT COUNT(*) as count FROM food WHERE nama_bahan LIKE '%${searchTerm}%'`
+      ? `SELECT COUNT(*) as count FROM food WHERE nama LIKE '%${searchTerm}%'`
       : `SELECT COUNT(*) as count FROM food`;
 
     const totalResult = db.exec(countQuery);
@@ -86,12 +86,13 @@ const Home = () => {
   const fetchData = (db) => {
     const offset = (currentPage - 1) * rowsPerPage;
     const query = searchTerm
-      ? `SELECT * FROM food WHERE nama_bahan LIKE '%${searchTerm}%' LIMIT ${rowsPerPage} OFFSET ${offset}`
+      ? `SELECT * FROM food WHERE nama LIKE '%${searchTerm}%' LIMIT ${rowsPerPage} OFFSET ${offset}`
       : `SELECT * FROM food LIMIT ${rowsPerPage} OFFSET ${offset}`;
 
     const result = db.exec(query);
     if (result.length > 0) {
       const rows = result[0].values;
+      console.log(rows)
       setFoodData(rows);
     } else {
       setFoodData([]);
@@ -119,10 +120,11 @@ const Home = () => {
 
   const addCaloriesToList = () => {
     if (selectedFood && weight) {
+      console.log(selectedFood, "SELECTED FOOD")
       const caloriesPer100g = selectedFood[3]; // Energi (Calories)
       const proteinPer100g = selectedFood[4]; // Protein
       const fatPer100g = selectedFood[5]; // Lemak (Fat)
-      const carbsPer100g = selectedFood[6]; // Karbohidrat (Carbohydrates)
+      const carbsPer100g = selectedFood[8]; // Karbohidrat (Carbohydrates)
 
       // Calculate total for each nutrient based on the weight
       const totalCalories = (caloriesPer100g / 100) * weight;
@@ -231,7 +233,7 @@ const Home = () => {
               <td className="px-1 py-2 w-1/6 text-center">{row[3]} Kal</td>
               <td className="px-1 py-2 w-1/6 text-center">{row[4]} g</td>
               <td className="px-1 py-2 w-1/6 text-center">{row[5]} g</td>
-              <td className="px-1 py-2 w-1/6 text-center">{row[6]} g</td>
+              <td className="px-1 py-2 w-1/6 text-center">{row[8]} g</td>
 
               <td className="px-1 py-2">
                 <button
