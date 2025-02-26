@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './Home';
 import Tdee from './Tdee';
+import NutritionFactTable from './NutritionFactTable';
 import NotFound from './NotFound';
 import Navigation from './Navigation'; // Assuming you have a Navigation component
 import './index.css';
@@ -17,6 +18,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/tdee" element={<Tdee />} />
+                <Route path="/nutritiontable" element={<NutritionFactTable />} />
                 
                 {/* Catch-all route for undefined routes */}
                 <Route path="*" element={<NotFound />} />

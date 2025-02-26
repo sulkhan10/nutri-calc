@@ -9,7 +9,16 @@ import {
   bmiAtom,
   tdeeAtom,
   errorAtom,
+  nutritionAtom,
 } from "./atoms"; // Import the atoms
+import {
+  ChartPieIcon,
+  TableCellsIcon,
+  UserIcon,
+  HomeIcon,
+} from "@heroicons/react/24/solid";
+import Dock from "./components/Dock/Dock";
+
 
 const Calculator = () => {
   // Use atoms to manage state
@@ -20,37 +29,69 @@ const Calculator = () => {
   const [activityLevel, setActivityLevel] = useAtom(activityLevelAtom);
   const [bmi, setBmi] = useAtom(bmiAtom);
   const [tdee, setTdee] = useAtom(tdeeAtom);
+  const [nutrition, setNutrition] = useAtom(nutritionAtom);
   const [error, setError] = useAtom(errorAtom);
 
   const calculateBmiAndTdee = () => {
-    // Reset error message
-    setError("");
+     // Reset error message  
+     setError("");  
 
-    // Check if all fields are filled
-    if (!age || !weight || !height || !activityLevel) {
-      setError("Please fill out all fields!");
-      return;
-    }
-
-    // Calculate BMI
-    const heightInMeters = height / 100;
-    const bmiCalculated = (weight / (heightInMeters * heightInMeters)).toFixed(2);
-    setBmi(bmiCalculated);
-
-    // Calculate BMR (Basal Metabolic Rate)
-    let bmr;
-    if (gender === "male") {
-      bmr = 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age;
-    } else {
-      bmr = 447.593 + 9.247 * weight + 3.098 * height - 4.33 * age;
-    }
-
-    // Calculate TDEE (Total Daily Energy Expenditure)
-    const totalCalories = bmr * activityLevel;
-    const totalCaloriesFixed = totalCalories.toFixed(2);
-    setTdee(totalCaloriesFixed);
+     // Check if all fields are filled  
+     if (!age || !weight || !height || !activityLevel) {  
+         setError("Please fill out all fields!");  
+         return;  
+     }  
+ 
+     // Calculate BMI  
+     const heightInMeters = height / 100;  
+     const bmiCalculated = (weight / (heightInMeters * heightInMeters)).toFixed(2);  
+     setBmi(bmiCalculated);  
+ 
+     // Calculate BMR (Basal Metabolic Rate)  
+     let bmr;  
+     if (gender === "male") {  
+         bmr = 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age;  
+     } else {  
+         bmr = 447.593 + 9.247 * weight + 3.098 * height - 4.33 * age;  
+     }  
+ 
+     // Calculate TDEE (Total Daily Energy Expenditure)  
+     const totalCalories = bmr * activityLevel;  
+     const totalCaloriesFixed = totalCalories.toFixed(2);  
+     setTdee(totalCaloriesFixed);  
+ 
+     // Calculate Nutrition based on TDEE and weight  
+     const isStrengthTraining = false 
+     const baseProteinPerKg = 0.8; // grams of protein per kg  
+     const proteinMultiplier = isStrengthTraining ? 1.6 : 1; // Adjust for strength training  
+     const dailyProteinNeeds = weight * baseProteinPerKg * proteinMultiplier;  
+ 
+     // Define the remaining calories after protein  
+     const proteinCalories = dailyProteinNeeds * 4; // 4 calories per gram of protein  
+     const remainingCalories = totalCalories - proteinCalories;  
+ 
+     // Define percentage ranges for fat and carbohydrates  
+     const fatPercentage = 0.20;      // 20%  
+     const carbPercentage = 1 - fatPercentage; // Remaining percentage  
+ 
+     // Calculate calories from fat and carbohydrates  
+     const fatCalories = remainingCalories * fatPercentage;  
+     const carbCalories = remainingCalories * carbPercentage;  
+ 
+     // Convert calories to grams  
+     const proteinGrams = dailyProteinNeeds.toFixed(2);  
+     const fatGrams = (fatCalories / 9).toFixed(2);         // 9 calories per gram of fat  
+     const carbGrams = (carbCalories / 4).toFixed(2);       // 4 calories per gram of carbohydrates  
+ 
+     // Set nutrition values (assuming you have setNutrition function)  
+     setNutrition({  
+         protein: proteinGrams,  
+         fat: fatGrams,  
+         carbohydrates: carbGrams,  
+     });  
   };
 
+  
   const resetCalculator = () => {
     // Reset all fields to default
     setGender("male");
@@ -61,8 +102,34 @@ const Calculator = () => {
     setBmi(null);
     setTdee(null);
     setError("");
+    setNutrition(null)
   };
+ const items = [
+    {
+      icon: <HomeIcon size={18} className="h-6 w-6" color="#1B5E20" />,
+      label: "Home",
+      link: "/",
+      onClick: () => alert("Home!"),
+    },
+    {
+      icon: <UserIcon size={18} className="h-6 w-6" color="#1B5E20" />,
+      label: "Data User",
+      link: "/tdee",
 
+    },
+    {
+      icon: <TableCellsIcon size={18} className="h-6 w-6" color="#1B5E20" />,
+      label: "Nutrition Table",
+      link: "/nutritiontable",
+
+    },
+    // {
+    //   icon: <ChartPieIcon size={18} className="h-6 w-6" color="#1B5E20" />,
+    //   label: "Settings",
+    //   link: "/",
+
+    // },
+  ];
   return (
     <div
     className={`container bg-[#E8F5E9] min-h-screen mx-auto p-6 max-w-sm text-xs ${
@@ -190,6 +257,13 @@ const Calculator = () => {
           Reset
         </button>
       )}
+       <Dock
+              className="fixed"
+              items={items}
+              panelHeight={68}
+              baseItemSize={50}
+              magnification={70}
+            />
     </div>
   );
 };

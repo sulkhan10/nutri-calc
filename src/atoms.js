@@ -9,4 +9,5 @@ export const heightAtom = atom("");
 export const activityLevelAtom = atom(1.2);
 export const bmiAtom = atom(null);
 export const tdeeAtom = atom(null);
+export const nutritionAtom = atom(null);
 export const errorAtom = atom("");
